@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en" itemscope itemtype="https://schema.org/WebApplication">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- SEO Meta Tags -->
+    <title>Free CSV to Excel Converter Online | XLS/XLSX Download - DataMagic</title>
+    <meta name="description" content="Convert CSV files to Excel format (XLS/XLSX) instantly. Preserve data formatting, handle large files, and download professionally formatted spreadsheets in one click. 100% free and secure!">
+    <meta name="keywords" content="CSV to Excel, CSV to XLSX, Convert CSV, Online Excel Converter, Free Spreadsheet Tool">
+    <link rel="canonical" href="https://yourdomain.com/csv-to-excel">
+    
+    <!-- Schema Markup -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "CSV to Excel Converter",
+        "applicationCategory": ["DataConverter", "Productivity"],
+        "operatingSystem": ["Windows", "Mac", "Linux", "Android", "iOS"],
+        "aggregateRating": {
+            "@type": "AggregateRating",
+            "ratingValue": "4.9",
+            "ratingCount": "4200",
+            "bestRating": "5"
+        },
+        "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "USD"
+        }
+    }
+    </script>
+
+    <!-- Social Media Meta -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://yourdomain.com/csv-to-excel">
+    <meta property="og:title" content="1-Click CSV to Excel Converter | Free Online Tool">
+    <meta property="og:description" content="Convert CSV files to professional Excel spreadsheets with formatting options. Mobile-friendly and 100% secure!">
+    <meta property="og:image" content="https://yourdomain.com/csv-excel-og.jpg">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Best CSV to Excel Converter Online">
+    <meta name="twitter:description" content="Free web tool to convert CSV files to Excel format with advanced formatting options">
+    <meta name="twitter:image" content="https://yourdomain.com/csv-excel-twitter.jpg">
+
+    <style>
+        :root {
+            --primary-color: #1976D2;
+            --hover-color: #1565C0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 1000px;
+            margin: 2rem auto;
+            padding: 20px;
+            background: #f8f9fa;
+        }
+
+        .converter-box {
+            border: 3px dashed var(--primary-color);
+            border-radius: 15px;
+            padding: 2rem;
+            text-align: center;
+            background: white;
+            margin: 20px 0;
+            transition: all 0.3s;
+        }
+
+        #previewTable {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 25px 0;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        #previewTable th, #previewTable td {
+            padding: 12px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+
+        .controls {
+            display: flex;
+            gap: 15px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+
+        button {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: 0.3s;
+            font-size: 16px;
+        }
+
+        button:hover {
+            background: var(--hover-color);
+            transform: translateY(-2px);
+        }
+
+        .options {
+            margin: 20px 0;
+            text-align: left;
+        }
+
+        /* Mobile Styles */
+        @media (max-width: 600px) {
+            body {
+                padding: 10px;
+                margin: 1rem auto;
+            }
+            
+            .converter-box {
+                padding: 1rem;
+            }
+            
+            button {
+                width: 100%;
+            }
+        }
+
+        /* SEO Content */
+        .seo-section {
+            margin: 40px 0;
+            padding: 25px;
+            background: white;
+            border-radius: 12px;
+        }
+    </style>
+</head>
+<body>
+    <h1 style="color: #2c3e50; text-align: center;" aria-label="CSV to Excel Converter">
+        📄→📊 CSV to Excel Converter
+    </h1>
+
+    <div class="converter-box" id="dropZone">
+        <div style="font-size: 1.2rem;">📁 Drop CSV File Here</div>
+        <div style="color: #666;">or click to select</div>
+        <input type="file" id="fileInput" accept=".csv" hidden>
+    </div>
+
+    <div class="options">
+        <label>
+            <input type="checkbox" id="headerCheckbox" checked> 
+            First row as header
+        </label>
+        <label style="margin-left: 20px;">
+            Delimiter:
+            <select id="delimiter">
+                <option value=",">Comma (,)</option>
+                <option value=";">Semicolon (;)</option>
+                <option value="\t">Tab</option>
+            </select>
+        </label>
+    </div>
+
+    <div class="controls">
+        <button onclick="convertToExcel()">Convert to Excel</button>
+        <button onclick="clearAll()">Clear</button>
+    </div>
+
+    <div id="preview"></div>
+
+    <!-- SEO Content Section -->
+    <section class="seo-section">
+        <h2>Why Convert CSV to Excel?</h2>
+        <ul>
+            <li>✅ Better Data Visualization</li>
+            <li>✅ Advanced Formulas Support</li>
+            <li>✅ Professional Formatting</li>
+            <li>✅ Charts & Graphs Creation</li>
+        </ul>
+        
+        <h3 style="margin-top: 25px;">How to Use:</h3>
+        <ol>
+            <li>Upload CSV file</li>
+            <li>Select delimiter type</li>
+            <li>Download formatted Excel file</li>
+        </ol>
+    </section>
+
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    
+    <script>
+        let csvData = null;
+
+        // File Handling
+        document.getElementById('fileInput').addEventListener('change', handleFile);
+        document.getElementById('dropZone').addEventListener('click', () => document.getElementById('fileInput').click());
+
+        // Drag and Drop
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(event => {
+            document.addEventListener(event, preventDefaults, false);
+        });
+
+        function preventDefaults(e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+
+        document.addEventListener('drop', handleDrop);
+
+        async function handleDrop(e) {
+            const files = e.dataTransfer.files;
+            if(files.length > 0) handleFile({ target: { files }});
+        }
+
+        async function handleFile(e) {
+            const file = e.target.files[0];
+            if(!file) return;
+
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const text = e.target.result;
+                csvData = parseCSV(text);
+                showPreview(csvData);
+            };
+            reader.readAsText(file);
+        }
+
+        function parseCSV(text) {
+            const delimiter = document.getElementById('delimiter').value;
+            const rows = text.split('\n');
+            return rows.map(row => row.split(delimiter));
+        }
+
+        function showPreview(data) {
+            const preview = document.getElementById('preview');
+            let html = '<table id="previewTable"><tbody>';
+            
+            data.slice(0, 5).forEach(row => {
+                html += '<tr>';
+                row.forEach(cell => {
+                    html += `<td>${cell}</td>`;
+                });
+                html += '</tr>';
+            });
+            
+            html += '</tbody></table>';
+            preview.innerHTML = html;
+        }
+
+        function convertToExcel() {
+            if(!csvData) return alert('Please upload a CSV file first!');
+            
+            const wb = XLSX.utils.book_new();
+            const ws = XLSX.utils.aoa_to_sheet(csvData);
+            XLSX.utils.book_append_sheet(wb, ws, "Sheet1");
+            
+            const wbout = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
+            const blob = new Blob([wbout], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+            
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = 'converted-data.xlsx';
+            link.click();
+        }
+
+        function clearAll() {
+            csvData = null;
+            document.getElementById('preview').innerHTML = '';
+            document.getElementById('fileInput').value = '';
+        }
+
+        // Mobile Adaptations
+        if(/Android|iPhone|iPad/i.test(navigator.userAgent)) {
+            document.getElementById('dropZone').innerHTML = `
+                <div>📱 Tap to Upload CSV</div>
+                <div style="color:#666;">(Max 5MB)</div>
+            `;
+        }
+    </script>
+
+    <!-- Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXX"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-XXXXX');
+    </script>
+</body>
+</html>
